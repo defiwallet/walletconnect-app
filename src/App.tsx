@@ -660,10 +660,10 @@ class App extends React.Component<any, any> {
     await this.sendRequest("wallet_watchAsset", {
       type: "ERC20",
       options: {
-        address: "0xb60e8dd61c5d32be8058bb8eb970870f07233155",
-        symbol: "FOO",
+        address: "0xe9e7cea3dedca5984780bafc599bd69add087d56",
+        symbol: "BUSD",
         decimals: 18,
-        image: "https://foo.io/token-image.svg",
+        image: "https://bscscan.com/token/images/busd_32.png",
       },
     });
   };
@@ -790,7 +790,7 @@ class App extends React.Component<any, any> {
                       {"wallet_registerOnboarding"}
                     </STestButton>
                     <STestButton left onClick={this.walletWatchAsset}>
-                      {"wallet_watchAsset"}
+                      {"wallet_watchAsset(BSC mainnet)"}
                     </STestButton>
                     <STestButton left onClick={this.walletScanQRCode}>
                       {"wallet_scanQRCode"}
