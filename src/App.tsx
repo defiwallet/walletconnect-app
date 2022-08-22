@@ -639,7 +639,7 @@ class App extends React.Component<any, any> {
   public walletSwitchEthereumChain = async () => {
     await this.sendRequest("wallet_switchEthereumChain", [
       {
-        chainId: "0x61",
+        chainId: "0x38",
       },
     ]);
   };
@@ -827,7 +827,7 @@ class App extends React.Component<any, any> {
                 {Object.keys(result).map(key => (
                   <SRow key={key}>
                     <SKey>{key}</SKey>
-                    <SValue>{result[key].toString()}</SValue>
+                    <SValue>{result[key] ? result[key].toString() : ''}</SValue>
                   </SRow>
                 ))}
               </STable>
