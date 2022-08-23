@@ -431,7 +431,7 @@ class App extends React.Component<any, any> {
     }
   };
 
-  public testLegacySignMessage = async () => {
+  public testStandardSignMessage = async () => {
     const { connector, address, chainId } = this.state;
 
     if (!connector) {
@@ -446,55 +446,6 @@ class App extends React.Component<any, any> {
 
     // eth_sign params
     const msgParams = [address, hash];
-
-    try {
-      // open modal
-      this.toggleModal();
-
-      // toggle pending request indicator
-      this.setState({ pendingRequest: true });
-
-      // send message
-      const result = await connector.signMessage(msgParams);
-
-      // verify signature
-      const valid = await verifySignature(address, result, hash, chainId);
-
-      // format displayed result
-      const formattedResult = {
-        method: "eth_sign (legacy)",
-        address,
-        valid,
-        result,
-      };
-
-      // display result
-      this.setState({
-        connector,
-        pendingRequest: false,
-        result: formattedResult || null,
-      });
-    } catch (error) {
-      console.error(error);
-      this.setState({ connector, pendingRequest: false, result: null });
-    }
-  };
-
-  public testStandardSignMessage = async () => {
-    const { connector, address, chainId } = this.state;
-
-    if (!connector) {
-      return;
-    }
-
-    // test message
-    const message = `My email is john@doe.com - ${new Date().toUTCString()}`;
-
-    // encode message (hex)
-    const hexMsg = convertUtf8ToHex(message);
-
-    // eth_sign params
-    const msgParams = [address, hexMsg];
 
     try {
       // open modal
@@ -672,6 +623,33 @@ class App extends React.Component<any, any> {
     await this.sendRequest("wallet_scanQRCode", []);
   };
 
+  public walletSendTransaction = async () => {
+    const { address } = this.state;
+
+    await this.sendRequest("eth_sendTransaction", [
+      {
+        from: address,
+        to: address,
+        value: 0,
+        data: "0x",
+      },
+    ]);
+  };
+
+  public approveAllowance = async () => {
+    const { address } = this.state;
+
+    await this.sendRequest("eth_sendTransaction", [
+      {
+        from: address,
+        to: "0x6045931e511ef7e53a4a817f971e0ca28c758809",
+        value: "0x0",
+        data:
+          "0x095ea7b3000000000000000000000000a5f8c5dbd5f286960b9d90548680ae5ebff07652ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff",
+      },
+    ]);
+  };
+
   public sendRequest = async (method: string, params: any) => {
     const { connector, address } = this.state;
 
@@ -765,9 +743,6 @@ class App extends React.Component<any, any> {
                     <STestButton left onClick={this.testSignTypedData}>
                       {"eth_signTypedData"}
                     </STestButton>
-                    <STestButton left onClick={this.testLegacySignMessage}>
-                      {"eth_sign (legacy)"}
-                    </STestButton>
                     <STestButton left onClick={this.testStandardSignMessage}>
                       {"eth_sign (standard)"}
                     </STestButton>
@@ -780,20 +755,14 @@ class App extends React.Component<any, any> {
                     <STestButton left onClick={this.walletSwitchEthereumChain}>
                       {"wallet_switchEthereumChain"}
                     </STestButton>
-                    <STestButton left onClick={this.walletGetPermissions}>
-                      {"wallet_getPermissions"}
-                    </STestButton>
-                    <STestButton left onClick={this.walletRequestPermissions}>
-                      {"wallet_requestPermissions"}
-                    </STestButton>
-                    <STestButton left onClick={this.walletRegisterOnboarding}>
-                      {"wallet_registerOnboarding"}
-                    </STestButton>
                     <STestButton left onClick={this.walletWatchAsset}>
                       {"wallet_watchAsset(BSC mainnet)"}
                     </STestButton>
-                    <STestButton left onClick={this.walletScanQRCode}>
-                      {"wallet_scanQRCode"}
+                    <STestButton left onClick={this.walletSendTransaction}>
+                      {"eth_sendTransaction without gas, gasPrice, nonce"}
+                    </STestButton>
+                    <STestButton left onClick={this.approveAllowance}>
+                      {"Approve LP allowance"}
                     </STestButton>
                   </STestButtonContainer>
                 </Column>
@@ -827,7 +796,7 @@ class App extends React.Component<any, any> {
                 {Object.keys(result).map(key => (
                   <SRow key={key}>
                     <SKey>{key}</SKey>
-                    <SValue>{result[key] ? result[key].toString() : ''}</SValue>
+                    <SValue>{result[key] ? result[key].toString() : ""}</SValue>
                   </SRow>
                 ))}
               </STable>
