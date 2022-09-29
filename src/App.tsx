@@ -162,7 +162,7 @@ class App extends React.Component<any, any> {
 
   public connect = async () => {
     // bridge url
-    const bridge = "wss://nbstream.binance.com/wallet-connector";
+    const bridge = "https://bridge.walletconnect.org";
 
     // create new connector
     const connector = new WalletConnect({ bridge, qrcodeModal: QRCodeModal });
